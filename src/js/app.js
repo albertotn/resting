@@ -58,6 +58,7 @@ requirejs(
     'vuecomp/dialogs-app.umd',
     'vuecomp/add-folder-button.umd',
     'vuecomp/response-panel.umd',
+    'vuecomp/authentication-panel.umd',
   ],
   function (
     $,
@@ -77,7 +78,8 @@ requirejs(
     BookmarkVm,
     DialogsApp,
     AddFolderButton,
-    ResponsePanel
+    ResponsePanel,
+    AuthenticationPanel
   ) {
     function AppVm() {
       const contexts = ko.observableArray()
@@ -602,6 +604,7 @@ requirejs(
         showRequestBody(false)
         showQuerystring(false)
         showAuthentication(true)
+        bacheca.publish('showAuthenticationPanel', ko.toJS(request))
         showActiveContext(false)
       }
 
@@ -886,6 +889,26 @@ requirejs(
       bacheca.subscribe('addFolder', addFolder)
       bacheca.subscribe('deleteFolder', removeFolder)
 
+      bacheca.subscribe('update.authenticationType', (value) => {
+        request.authenticationType(value)
+      })
+
+      bacheca.subscribe('update.username', (value) => {
+        request.username(value)
+      })
+      bacheca.subscribe('update.password', (value) => {
+        request.password(value)
+      })
+      bacheca.subscribe('update.jwtToken', (value) => {
+        request.jwtToken(value)
+      })
+      bacheca.subscribe('update.oauthAccessToken', (value) => {
+        request.oauthAccessToken(value)
+      })
+      bacheca.subscribe('update.oauthAuthPosition', (value) => {
+        request.oauthAuthPosition(value)
+      })
+
       return {
         contexts,
         selectedCtx,
@@ -1047,6 +1070,16 @@ requirejs(
         },
         render: function (h) {
           return h('response-panel')
+        },
+      })
+
+      const authenticationPanelVueApp = new Vue({
+        el: '#v-authentication-panel',
+        components: {
+          AuthenticationPanel,
+        },
+        render: function (h) {
+          return h('authentication-panel')
         },
       })
 

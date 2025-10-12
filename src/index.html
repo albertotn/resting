@@ -294,9 +294,9 @@
                   <entry-list
                     params="entryList : request.querystring"
                     data-bind="visible : showQuerystring"></entry-list>
-                  <authentication
-                    params="request: request"
-                    data-bind="visible : showAuthentication"></authentication>
+                  <div data-bind="visible: showAuthentication">
+                    <div id="v-authentication-panel"></div>
+                  </div>
                   <!-- ACTIVE CONTEXT PANEL -->
                   <div class="row" data-bind="visible: showActiveContext">
                     <div class="form-inline">
