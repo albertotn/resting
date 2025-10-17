@@ -44,7 +44,6 @@ define([
       loadedFile.style.display = 'inline'
       document.getElementById('file-remove-button').style.display = 'inline'
       document.getElementById('select-file-button').style.display = 'none'
-      console.log(JSON.stringify(entryFile))
     }
 
     const isFileEntry = ko.computed(function () {

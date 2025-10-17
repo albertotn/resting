@@ -64,6 +64,7 @@ export default {
     bacheca.subscribe('hideAuthenticationPanel', () => (this.show = false))
     bacheca.subscribe('reset', this.clear)
     bacheca.subscribe('loadBookmark', this.load)
+    bacheca.subscribe('update.authentication', this.populate)
   },
   computed: {
     useBasicForm() {
@@ -111,14 +112,7 @@ export default {
     load(bookmark) {
       if (this.show) {
         const authData = bookmark.request.authentication
-        this.populate({
-          authenticationType: authData.type,
-          username: authData.username,
-          password: authData.password,
-          jwtToken: authData.jwtToken,
-          oauthAccessToken: authData.oauthAccessToken,
-          oauthAuthPosition: authData.oauthAuthPosition,
-        })
+        this.populate(authData)
       }
     },
     clear() {
@@ -130,7 +124,15 @@ export default {
       this.oauthAuthPosition = ''
     },
     populate(data) {
-      this.authenticationType = data.authenticationType
+      let isString = (value) =>
+        typeof value === 'string' || value instanceof String
+      if (data.authenticationType != undefined) {
+        this.authenticationType = isString(data.authenticationType)
+          ? data.authenticationType
+          : ''
+      } else {
+        this.authenticationType = isString(data.type) ? data.type : ''
+      }
       this.username = data.username
       this.password = data.password
       this.jwtToken = data.jwtToken

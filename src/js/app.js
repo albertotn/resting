@@ -275,10 +275,10 @@ requirejs(
               request.oauthAuthPosition(authentication.oauthAuthPosition)
               request.oauthAccessToken(authentication.oauthAccessToken)
               break
-
             default:
             // No authentication
           }
+          bacheca.publish('update.authentication', authentication)
         }
       }
 
@@ -816,7 +816,6 @@ requirejs(
               _authentication(),
               request.context()
             )
-
             if (bookmarkCopy) {
               tab.bookmarkSelected.id(bookmarkCopy.id)
             } else {
