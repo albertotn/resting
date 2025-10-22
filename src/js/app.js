@@ -59,6 +59,7 @@ requirejs(
     'vuecomp/add-folder-button.umd',
     'vuecomp/response-panel.umd',
     'vuecomp/authentication-panel.umd',
+    'vuecomp/header.umd',
   ],
   function (
     $,
@@ -79,7 +80,8 @@ requirejs(
     DialogsApp,
     AddFolderButton,
     ResponsePanel,
-    AuthenticationPanel
+    AuthenticationPanel,
+    RHeader
   ) {
     function AppVm() {
       const contexts = ko.observableArray()
@@ -120,14 +122,12 @@ requirejs(
       // Flags to show/hide dialogs
       const showBookmarkDialog = ko.observable(false)
       const showContextDialog = ko.observable(false)
-      const showCreateContextDialog = ko.observable(false)
       const showConfirmDialog = ko.observable(false)
 
       const executionInProgress = ko.observable(false)
       const saveAsNewBookmark = ko.observable(false)
 
       const dialogConfirmMessage = ko.observable()
-      const contextName = ko.observable()
 
       const bookmarkProvider = makeBookmarkProvider(storage)
 
@@ -147,18 +147,6 @@ requirejs(
 
       const serializeBookmark = (bookmarkObj) => {
         return bookmarkProvider.fromJson(JSON.stringify(bookmarkObj))
-      }
-
-      const aboutDialog = () => {
-        bacheca.publish('showAboutDialog')
-      }
-
-      const creditsDialog = () => {
-        bacheca.publish('showCreditsDialog')
-      }
-
-      const donateDialog = () => {
-        bacheca.publish('showDonateDialog')
       }
 
       const contextDialog = (context) => {
@@ -656,7 +644,6 @@ requirejs(
         if (event.keyCode === excape) {
           showBookmarkDialog(false),
             showContextDialog(false),
-            showCreateContextDialog(false),
             showConfirmDialog(false),
             saveAsNewBookmark(false)
         }
@@ -692,26 +679,26 @@ requirejs(
         dismissContextDialog()
       }
 
-      const loadContexts = () => {
-        // load contexts
-        const loadedCtxs = []
-        storage.loadContexts(
-          (ctx) => {
-            loadedCtxs.push(new ContextVm(ctx.name, ctx.variables))
-          },
-          () => {
-            defaultCtxIdx = loadedCtxs.findIndex(
-              (ctx) => ctx.name() === 'default'
-            )
-            if (defaultCtxIdx < 0) {
-              defaultCtxIdx = 0
-              contexts.push(new ContextVm())
-            }
-            loadedCtxs.forEach((ctx) => contexts.push(ctx))
-            contexts.sort(sortCriteriaCtx)
-          }
-        )
-      }
+      // const loadContexts = () => {
+      //   // load contexts
+      //   const loadedCtxs = []
+      //   storage.loadContexts(
+      //     (ctx) => {
+      //       loadedCtxs.push(new ContextVm(ctx.name, ctx.variables))
+      //     },
+      //     () => {
+      //       defaultCtxIdx = loadedCtxs.findIndex(
+      //         (ctx) => ctx.name() === 'default'
+      //       )
+      //       if (defaultCtxIdx < 0) {
+      //         defaultCtxIdx = 0
+      //         contexts.push(new ContextVm())
+      //       }
+      //       loadedCtxs.forEach((ctx) => contexts.push(ctx))
+      //       contexts.sort(sortCriteriaCtx)
+      //     }
+      //   )
+      // }
 
       const _getDefaultCtx = () => {
         return defaultCtxIdx >= 0 ? contexts()[defaultCtxIdx] : new ContextVm()
@@ -721,22 +708,17 @@ requirejs(
         showConfirmDialog(false)
       }
 
+      // to remove when active context panel is converted to vue component
       const createContextDialog = () => {
-        showCreateContextDialog(true)
+        bacheca.publish('showCreateContextDialog')
       }
 
-      const dismissCreateContextDialog = () => {
-        contextName('')
-        showCreateContextDialog(false)
-      }
-
-      const createContext = () => {
-        if (contextName() !== 'default') {
-          contexts.push(new ContextVm(contextName()))
-          storage.saveContext({ name: contextName(), variables: [] })
+      const createContext = (ctxName) => {
+        if (ctxName !== 'default') {
+          contexts.push(new ContextVm(ctxName))
+          storage.saveContext({ name: ctxName, variables: [] })
           contexts.sort(sortCriteriaCtx)
         }
-        dismissCreateContextDialog()
       }
 
       const loadBookmarkObj = (bookmarkObj) => {
@@ -888,6 +870,8 @@ requirejs(
       bacheca.subscribe('addFolder', addFolder)
       bacheca.subscribe('deleteFolder', removeFolder)
 
+      bacheca.subscribe('createContext', createContext)
+
       bacheca.subscribe('update.authenticationType', (value) => {
         request.authenticationType(value)
       })
@@ -934,14 +918,12 @@ requirejs(
 
         showBookmarkDialog,
         showContextDialog,
-        showCreateContextDialog,
         showConfirmDialog,
 
         executionInProgress,
         saveAsNewBookmark,
 
         dialogConfirmMessage,
-        contextName,
 
         // functions
         clearRequest,
@@ -961,9 +943,6 @@ requirejs(
         authenticationPanel,
         contextPanel,
 
-        aboutDialog,
-        creditsDialog,
-        donateDialog,
         contextDialog,
         defaultContextDialog,
         contextDialogByName,
@@ -971,7 +950,7 @@ requirejs(
         saveAsBookmarkDialog,
 
         dismissSaveBookmarkDialog,
-        dismissContextDialog,
+        dismissContextDialog, // used by context-dialog panel
         closeDialogOnEscape,
         saveContext,
         // FIXME: not good to expose this internal function
@@ -983,9 +962,8 @@ requirejs(
         loadBookmarkInView,
         isBookmarkLoaded,
         bookmarkScreenName,
-        loadContexts,
+        // loadContexts,
         createContextDialog,
-        dismissCreateContextDialog,
         createContext,
         deleteContext,
         confirmDeleteContext,
@@ -1082,6 +1060,16 @@ requirejs(
         },
       })
 
+      const headerVueApp = new Vue({
+        el: '#v-header',
+        components: {
+          RHeader,
+        },
+        render: function (h) {
+          return h('r-header')
+        },
+      })
+
       // add the first tab
       appVM.newTab()
 
@@ -1095,7 +1083,7 @@ requirejs(
         }
       )
 
-      appVM.loadContexts()
+      // appVM.loadContexts()
     })
   }
 )
