@@ -159,6 +159,14 @@ requirejs(
         contextDialog(_getDefaultCtx())
       }
 
+      const getContextVm = (ctxName) => {
+        let ctxToLoad = contexts().find((ctx) => ctx.name() === ctxName)
+        if (ctxToLoad === undefined) {
+          ctxToLoad = _getDefaultCtx()
+        }
+        return ctxToLoad
+      }
+
       const contextDialogByName = () => {
         let ctxToLoad = contexts().find(
           (ctx) => ctx.name() === request.context()
@@ -679,26 +687,26 @@ requirejs(
         dismissContextDialog()
       }
 
-      // const loadContexts = () => {
-      //   // load contexts
-      //   const loadedCtxs = []
-      //   storage.loadContexts(
-      //     (ctx) => {
-      //       loadedCtxs.push(new ContextVm(ctx.name, ctx.variables))
-      //     },
-      //     () => {
-      //       defaultCtxIdx = loadedCtxs.findIndex(
-      //         (ctx) => ctx.name() === 'default'
-      //       )
-      //       if (defaultCtxIdx < 0) {
-      //         defaultCtxIdx = 0
-      //         contexts.push(new ContextVm())
-      //       }
-      //       loadedCtxs.forEach((ctx) => contexts.push(ctx))
-      //       contexts.sort(sortCriteriaCtx)
-      //     }
-      //   )
-      // }
+      const loadContexts = () => {
+        // load contexts
+        const loadedCtxs = []
+        storage.loadContexts(
+          (ctx) => {
+            loadedCtxs.push(new ContextVm(ctx.name, ctx.variables))
+          },
+          () => {
+            defaultCtxIdx = loadedCtxs.findIndex(
+              (ctx) => ctx.name() === 'default'
+            )
+            if (defaultCtxIdx < 0) {
+              defaultCtxIdx = 0
+              contexts.push(new ContextVm())
+            }
+            loadedCtxs.forEach((ctx) => contexts.push(ctx))
+            contexts.sort(sortCriteriaCtx)
+          }
+        )
+      }
 
       const _getDefaultCtx = () => {
         return defaultCtxIdx >= 0 ? contexts()[defaultCtxIdx] : new ContextVm()
@@ -872,6 +880,13 @@ requirejs(
 
       bacheca.subscribe('createContext', createContext)
 
+      bacheca.subscribe('showContextDialog', (ctxName) => {
+        const context = getContextVm(ctxName)
+        selectedCtx.name(context.name())
+        selectedCtx.variables(context.variables())
+        showContextDialog(true)
+      })
+
       bacheca.subscribe('update.authenticationType', (value) => {
         request.authenticationType(value)
       })
@@ -962,7 +977,7 @@ requirejs(
         loadBookmarkInView,
         isBookmarkLoaded,
         bookmarkScreenName,
-        // loadContexts,
+        loadContexts,
         createContextDialog,
         createContext,
         deleteContext,
@@ -996,15 +1011,15 @@ requirejs(
         },
       })
 
-      ko.components.register('authentication', {
-        viewModel: {
-          require: 'app/components/authentication/authenticationVm',
-        },
-        template: {
-          require:
-            'text!app/components/authentication/authentication_view.html',
-        },
-      })
+      // ko.components.register('authentication', {
+      //   viewModel: {
+      //     require: 'app/components/authentication/authenticationVm',
+      //   },
+      //   template: {
+      //     require:
+      //       'text!app/components/authentication/authentication_view.html',
+      //   },
+      // })
 
       // Show all options, more restricted setup than the Knockout regular binding.
       var options = {
@@ -1083,7 +1098,7 @@ requirejs(
         }
       )
 
-      // appVM.loadContexts()
+      appVM.loadContexts()
     })
   }
 )

@@ -284,6 +284,8 @@ define([
       if (context.name === 'default') {
         appVm.defaultCtxIdx = contextToEditIdx
       }
+
+      bacheca.publish('importContext', context.name)
     }
 
     const _handleExport = () => {
