@@ -59,6 +59,7 @@ requirejs(
     'vuecomp/add-folder-button.umd',
     'vuecomp/response-panel.umd',
     'vuecomp/authentication-panel.umd',
+    'vuecomp/header.umd',
   ],
   function (
     $,
@@ -79,7 +80,8 @@ requirejs(
     DialogsApp,
     AddFolderButton,
     ResponsePanel,
-    AuthenticationPanel
+    AuthenticationPanel,
+    RHeader
   ) {
     function AppVm() {
       const contexts = ko.observableArray()
@@ -120,14 +122,12 @@ requirejs(
       // Flags to show/hide dialogs
       const showBookmarkDialog = ko.observable(false)
       const showContextDialog = ko.observable(false)
-      const showCreateContextDialog = ko.observable(false)
       const showConfirmDialog = ko.observable(false)
 
       const executionInProgress = ko.observable(false)
       const saveAsNewBookmark = ko.observable(false)
 
       const dialogConfirmMessage = ko.observable()
-      const contextName = ko.observable()
 
       const bookmarkProvider = makeBookmarkProvider(storage)
 
@@ -149,18 +149,6 @@ requirejs(
         return bookmarkProvider.fromJson(JSON.stringify(bookmarkObj))
       }
 
-      const aboutDialog = () => {
-        bacheca.publish('showAboutDialog')
-      }
-
-      const creditsDialog = () => {
-        bacheca.publish('showCreditsDialog')
-      }
-
-      const donateDialog = () => {
-        bacheca.publish('showDonateDialog')
-      }
-
       const contextDialog = (context) => {
         selectedCtx.name(context.name())
         selectedCtx.variables(context.variables())
@@ -169,6 +157,14 @@ requirejs(
 
       const defaultContextDialog = () => {
         contextDialog(_getDefaultCtx())
+      }
+
+      const getContextVm = (ctxName) => {
+        let ctxToLoad = contexts().find((ctx) => ctx.name() === ctxName)
+        if (ctxToLoad === undefined) {
+          ctxToLoad = _getDefaultCtx()
+        }
+        return ctxToLoad
       }
 
       const contextDialogByName = () => {
@@ -656,7 +652,6 @@ requirejs(
         if (event.keyCode === excape) {
           showBookmarkDialog(false),
             showContextDialog(false),
-            showCreateContextDialog(false),
             showConfirmDialog(false),
             saveAsNewBookmark(false)
         }
@@ -721,22 +716,17 @@ requirejs(
         showConfirmDialog(false)
       }
 
+      // to remove when active context panel is converted to vue component
       const createContextDialog = () => {
-        showCreateContextDialog(true)
+        bacheca.publish('showCreateContextDialog')
       }
 
-      const dismissCreateContextDialog = () => {
-        contextName('')
-        showCreateContextDialog(false)
-      }
-
-      const createContext = () => {
-        if (contextName() !== 'default') {
-          contexts.push(new ContextVm(contextName()))
-          storage.saveContext({ name: contextName(), variables: [] })
+      const createContext = (ctxName) => {
+        if (ctxName !== 'default') {
+          contexts.push(new ContextVm(ctxName))
+          storage.saveContext({ name: ctxName, variables: [] })
           contexts.sort(sortCriteriaCtx)
         }
-        dismissCreateContextDialog()
       }
 
       const loadBookmarkObj = (bookmarkObj) => {
@@ -888,6 +878,15 @@ requirejs(
       bacheca.subscribe('addFolder', addFolder)
       bacheca.subscribe('deleteFolder', removeFolder)
 
+      bacheca.subscribe('createContext', createContext)
+
+      bacheca.subscribe('showContextDialog', (ctxName) => {
+        const context = getContextVm(ctxName)
+        selectedCtx.name(context.name())
+        selectedCtx.variables(context.variables())
+        showContextDialog(true)
+      })
+
       bacheca.subscribe('update.authenticationType', (value) => {
         request.authenticationType(value)
       })
@@ -934,14 +933,12 @@ requirejs(
 
         showBookmarkDialog,
         showContextDialog,
-        showCreateContextDialog,
         showConfirmDialog,
 
         executionInProgress,
         saveAsNewBookmark,
 
         dialogConfirmMessage,
-        contextName,
 
         // functions
         clearRequest,
@@ -961,9 +958,6 @@ requirejs(
         authenticationPanel,
         contextPanel,
 
-        aboutDialog,
-        creditsDialog,
-        donateDialog,
         contextDialog,
         defaultContextDialog,
         contextDialogByName,
@@ -971,7 +965,7 @@ requirejs(
         saveAsBookmarkDialog,
 
         dismissSaveBookmarkDialog,
-        dismissContextDialog,
+        dismissContextDialog, // used by context-dialog panel
         closeDialogOnEscape,
         saveContext,
         // FIXME: not good to expose this internal function
@@ -985,7 +979,6 @@ requirejs(
         bookmarkScreenName,
         loadContexts,
         createContextDialog,
-        dismissCreateContextDialog,
         createContext,
         deleteContext,
         confirmDeleteContext,
@@ -1018,15 +1011,15 @@ requirejs(
         },
       })
 
-      ko.components.register('authentication', {
-        viewModel: {
-          require: 'app/components/authentication/authenticationVm',
-        },
-        template: {
-          require:
-            'text!app/components/authentication/authentication_view.html',
-        },
-      })
+      // ko.components.register('authentication', {
+      //   viewModel: {
+      //     require: 'app/components/authentication/authenticationVm',
+      //   },
+      //   template: {
+      //     require:
+      //       'text!app/components/authentication/authentication_view.html',
+      //   },
+      // })
 
       // Show all options, more restricted setup than the Knockout regular binding.
       var options = {
@@ -1079,6 +1072,16 @@ requirejs(
         },
         render: function (h) {
           return h('authentication-panel')
+        },
+      })
+
+      const headerVueApp = new Vue({
+        el: '#v-header',
+        components: {
+          RHeader,
+        },
+        render: function (h) {
+          return h('r-header')
         },
       })
 

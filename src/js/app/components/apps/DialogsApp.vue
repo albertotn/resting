@@ -19,6 +19,9 @@
     <export-dialog
       v-show="showExportDialog"
       @dismiss-dialog="showExportDialog = false"></export-dialog>
+    <create-context-dialog
+      v-show="showCreateContextDialog"
+      @dismiss-dialog="showCreateContextDialog = false"></create-context-dialog>
   </div>
 </template>
 
@@ -30,6 +33,7 @@ import DonateDialog from 'Components/DonateDialog.vue'
 import FolderDialog from 'Components/FolderDialog.vue'
 import ImportDialog from 'Components/ImportDialog.vue'
 import ExportDialog from 'Components/ExportDialog.vue'
+import CreateContextDialog from 'Components/CreateContextDialog.vue'
 
 export default {
   name: 'DialogsApp',
@@ -46,6 +50,10 @@ export default {
     })
     bacheca.subscribe('showImportDialog', () => (this.showImportDialog = true))
     bacheca.subscribe('showExportDialog', () => (this.showExportDialog = true))
+    bacheca.subscribe(
+      'showCreateContextDialog',
+      () => (this.showCreateContextDialog = true)
+    )
   },
   data() {
     return {
@@ -55,6 +63,7 @@ export default {
       showFolderDialog: false,
       showImportDialog: false,
       showExportDialog: false,
+      showCreateContextDialog: false,
       selectedFolder: false,
     }
   },
@@ -65,6 +74,7 @@ export default {
     FolderDialog,
     ImportDialog,
     ExportDialog,
+    CreateContextDialog,
   },
 }
 </script>
