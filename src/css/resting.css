@@ -25,7 +25,7 @@ body {
   min-height: 340px;
   max-height: 100%;
   resize: vertical;
-  white-space: normal;
+  white-space: pre-wrap;
 }
 
 .response-metric,
@@ -43,19 +43,19 @@ body {
   font-size: 110%;
 }
 
-.nav-pills > li > a {
+.nav-pills>li>a {
   border-radius: 0px;
 }
 
-.nav-pills > li.active > a,
-.nav-pills > li.active > a:focus,
-.nav-pills > li.active > a:hover {
+.nav-pills>li.active>a,
+.nav-pills>li.active>a:focus,
+.nav-pills>li.active>a:hover {
   color: #337ab7;
   background-color: #fff;
   border-bottom: solid 3px #337ab7;
 }
 
-.panel-heading > .panel-title > a {
+.panel-heading>.panel-title>a {
   display: block;
   width: 100%;
   text-decoration: none;
@@ -109,7 +109,7 @@ a.bookmark:hover,
   color: #fff;
 }
 
-.folder .panel-heading:hover > a {
+.folder .panel-heading:hover>a {
   color: #fff;
 }
 
@@ -136,7 +136,7 @@ label.disabled {
   position: relative;
 }
 
-.dropdown-submenu > .dropdown-menu {
+.dropdown-submenu>.dropdown-menu {
   top: 0;
   left: 100%;
   margin-top: -6px;
@@ -146,7 +146,7 @@ label.disabled {
   border-radius: 0 6px 6px 6px;
 }
 
-.dropdown-submenu > a:after {
+.dropdown-submenu>a:after {
   display: block;
   content: ' ';
   float: right;
@@ -159,19 +159,23 @@ label.disabled {
   margin-top: 5px;
   margin-right: -10px;
 }
-.dropdown-submenu:hover > a:after {
+
+.dropdown-submenu:hover>a:after {
   border-left-color: #555;
 }
+
 .dropdown-submenu.pull-left {
   float: none;
 }
-.dropdown-submenu.pull-left > .dropdown-menu {
+
+.dropdown-submenu.pull-left>.dropdown-menu {
   left: -100%;
   margin-left: 10px;
   -webkit-border-radius: 6px 0 6px 6px;
   -moz-border-radius: 6px 0 6px 6px;
   border-radius: 6px 0 6px 6px;
 }
+
 .ctx-menu {
   width: 200px;
   height: 100px;
@@ -227,4 +231,326 @@ a.donate-link:hover {
 
 #plus-tab:hover {
   background-color: #286090;
+}
+
+/* Dark Mode */
+body.dark-mode {
+  background-color: #222;
+  color: #eee;
+}
+
+body.dark-mode .navbar-default {
+  background-color: #333;
+  border-color: #444;
+}
+
+body.dark-mode .navbar-default .navbar-nav>li>a,
+body.dark-mode .navbar-default .navbar-text {
+  color: #eee;
+}
+
+body.dark-mode .navbar-default .navbar-nav>li>a:hover {
+  color: #fff;
+  background-color: #444;
+}
+
+body.dark-mode .panel,
+body.dark-mode .panel-default {
+  background-color: #333;
+  border-color: #444;
+}
+
+body.dark-mode .panel-heading {
+  background-color: #444;
+  border-color: #555;
+  color: #eee;
+}
+
+body.dark-mode .panel-body {
+  background-color: #2a2a2a;
+}
+
+body.dark-mode .form-control {
+  background-color: #444;
+  color: #eee;
+  border-color: #555;
+}
+
+body.dark-mode .nav-pills>li.active>a,
+body.dark-mode .nav-pills>li.active>a:focus,
+body.dark-mode .nav-pills>li.active>a:hover {
+  color: #eee;
+  background-color: #2a2a2a;
+  border-bottom: solid 3px #eee;
+}
+
+body.dark-mode a.bookmark,
+body.dark-mode a.folder {
+  color: #ccc;
+}
+
+body.dark-mode a.folder:hover,
+body.dark-mode a.bookmark:hover,
+body.dark-mode .folder .panel-heading:hover {
+  background-color: #555;
+  color: #fff;
+}
+
+body.dark-mode .folder .panel {
+  background-color: #444;
+}
+
+body.dark-mode .dialog {
+  background-color: #333;
+}
+
+body.dark-mode .json-viewer {
+  color: #eee;
+}
+
+body.dark-mode .json-viewer ul {
+  border-left-color: #555;
+}
+
+body.dark-mode .json-viewer .type-string {
+  color: #9ccc65;
+  /* light green */
+}
+
+body.dark-mode .json-viewer .type-date {
+  color: #ef9a9a;
+  /* light red */
+}
+
+body.dark-mode .json-viewer .type-boolean {
+  color: #81d4fa;
+  /* light blue */
+}
+
+body.dark-mode .json-viewer .type-number {
+  color: #81d4fa;
+  /* light blue */
+}
+
+body.dark-mode .json-viewer .type-null,
+body.dark-mode .json-viewer .type-undefined {
+  color: #ce93d8;
+  /* light purple */
+}
+
+body.dark-mode .json-viewer a.list-link {
+  color: #eee;
+}
+
+body.dark-mode .json-viewer a.list-link:before {
+  color: #999;
+}
+
+body.dark-mode .json-viewer .items-ph {
+  color: #999;
+}
+
+body.dark-mode .table>tbody>tr>td,
+body.dark-mode .table>tbody>tr>th,
+body.dark-mode .table>tfoot>tr>td,
+body.dark-mode .table>tfoot>tr>th,
+body.dark-mode .table>thead>tr>td,
+body.dark-mode .table>thead>tr>th {
+  border-top-color: #444;
+}
+
+body.dark-mode .table-striped>tbody>tr:nth-of-type(odd) {
+  background-color: #333;
+}
+
+body.dark-mode .table-striped>tbody>tr:nth-of-type(even) {
+  background-color: #3a3a3a;
+}
+
+body.dark-mode .table>tbody>tr>td {
+  color: #eee;
+}
+
+body.dark-mode .pre-scrollable {
+  background-color: #2a2a2a;
+  color: #eee;
+}
+
+/* Dark mode for dropdown menus (context menu) */
+body.dark-mode .dropdown-menu {
+  background-color: #333;
+  border-color: #444;
+}
+
+body.dark-mode .dropdown-menu>li>a {
+  color: #eee;
+}
+
+body.dark-mode .dropdown-menu>li>a:hover,
+body.dark-mode .dropdown-menu>li>a:focus {
+  background-color: #444;
+  color: #fff;
+}
+
+body.dark-mode .dropdown-menu .divider {
+  background-color: #555;
+}
+
+body.dark-mode .dropdown-submenu>a:after {
+  border-left-color: #999;
+}
+
+body.dark-mode .dropdown-submenu:hover>a:after {
+  border-left-color: #eee;
+}
+
+/* Dark mode for code blocks (raw body) */
+body.dark-mode pre,
+body.dark-mode code {
+  background-color: #2a2a2a;
+  color: #eee;
+  border-color: #444;
+}
+
+body.dark-mode pre code {
+  background-color: transparent;
+}
+
+/* Dark mode for syntax highlighting */
+body.dark-mode .hljs {
+  background-color: #2a2a2a;
+  color: #eee;
+}
+
+/* Dark mode for dialogs */
+body.dark-mode .panel-primary {
+  border-color: #337ab7;
+}
+
+body.dark-mode .panel-primary>.panel-heading {
+  background-color: #337ab7;
+  border-color: #337ab7;
+  color: #fff;
+}
+
+body.dark-mode .panel-footer {
+  background-color: #2a2a2a;
+  border-color: #444;
+}
+
+body.dark-mode .btn-default {
+  background-color: #444;
+  color: #eee;
+  border-color: #555;
+}
+
+body.dark-mode .btn-default:hover {
+  background-color: #555;
+  color: #fff;
+}
+
+body.dark-mode .btn-default:disabled {
+  background-color: #333;
+  color: #666;
+  border-color: #444;
+}
+
+body.dark-mode label {
+  color: #eee;
+}
+
+body.dark-mode input[type="radio"] {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+body.dark-mode input[type="file"] {
+  color: #eee;
+}
+
+/* Dark mode for glyphicons and icons */
+body.dark-mode .glyphicon {
+  color: #eee;
+}
+
+body.dark-mode .btn .glyphicon {
+  color: #eee;
+}
+
+/* Dark mode for context menu (list-group) */
+body.dark-mode .list-group-item {
+  background-color: #333;
+  border-color: #444;
+  color: #eee;
+}
+
+body.dark-mode .list-group-item.ctx-menu-item:hover {
+  background-color: #444;
+  color: #fff;
+}
+
+body.dark-mode .ctx-menu {
+  background-color: #333;
+  border: 1px solid #444;
+}
+
+/* Dark mode for buttons with icons */
+body.dark-mode .btn-xs {
+  background-color: transparent;
+  border-color: transparent;
+  color: #eee;
+}
+
+body.dark-mode .btn-xs:hover {
+  background-color: #444;
+  color: #fff;
+}
+
+/* Spacing for dialog buttons */
+.panel-footer .btn {
+  margin-right: 10px;
+}
+
+.panel-footer .btn:last-child {
+  margin-right: 0;
+}
+
+/* Spacing for tab content */
+entry-list,
+request-body,
+#v-authentication-panel {
+  display: block;
+  margin-top: 10px;
+}
+
+/* Response metrics styling */
+.response-metric {
+  margin-right: 5px;
+}
+
+.response-metric-value {
+  margin-right: 15px;
+  font-weight: bold;
+}
+
+/* Dark mode for response metrics */
+body.dark-mode .response-metric {
+  color: #aaa;
+}
+
+body.dark-mode .response-metric-value {
+  color: #4CAF50;
+}
+
+/* Theme toggle icon styling */
+.theme-toggle {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+}
+
+.theme-toggle .fa {
+  font-size: 1.2em;
 }

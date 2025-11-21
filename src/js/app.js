@@ -907,6 +907,22 @@ requirejs(
         request.oauthAuthPosition(value)
       })
 
+      bacheca.subscribe('setTheme', (theme) => {
+        const highlightStyle = document.getElementById('highlight-style');
+        if (theme === 'dark') {
+          document.body.classList.add('dark-mode');
+          if(highlightStyle) {
+            highlightStyle.href = 'css/styles/darcula.css';
+          }
+        } else {
+          document.body.classList.remove('dark-mode');
+          if(highlightStyle) {
+            highlightStyle.href = 'css/styles/default.css';
+          }
+        }
+        storage.saveSettings({ theme: theme })
+      })
+
       return {
         contexts,
         selectedCtx,
@@ -1097,6 +1113,19 @@ requirejs(
           $(this).parent().toggleClass('open')
         }
       )
+
+      const loadTheme = () => {
+        storage.readSettings('theme', (theme) => {
+          const highlightStyle = document.getElementById('highlight-style');
+          if (theme === 'dark') {
+            document.body.classList.add('dark-mode');
+            if(highlightStyle) {
+              highlightStyle.href = 'css/styles/darcula.css';
+            }
+          }
+        });
+      };
+      loadTheme();
 
       appVM.loadContexts()
     })

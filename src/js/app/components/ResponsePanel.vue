@@ -24,9 +24,7 @@
             </div>
             <div v-if="showBody">
               <response-viewer v-if="useFormattedBody"></response-viewer>
-              <pre class="pre-scrollable" v-if="useRawBody">
-              <code id="highlighted-response">{{content}}</code>
-            </pre>
+              <pre class="pre-scrollable" v-if="useRawBody"><code id="highlighted-response"></code></pre>
             </div>
             <div v-if="showHeaders">
               <table class="table table-striped">
@@ -104,7 +102,8 @@ export default {
         this.content = JSON.stringify(this.responseBody, null, 2) // used only for clipboard formatted body
         bacheca.publish('response', this.content)
       } else {
-        this.content = JSON.stringify(this.responseBody)
+        // Raw body - stringify without formatting
+        this.content = JSON.stringify(this.responseBody, null, 2)
       }
     },
     formattedBody() {
@@ -116,6 +115,18 @@ export default {
       this.useFormattedBody = false
       this.useRawBody = true
       this.prepareBodyForView()
+
+      this.$nextTick(() => {
+        const block = this.$el.querySelector('#highlighted-response')
+        if (block) {
+          block.textContent = this.content
+          if (window.hljs) {
+            window.hljs.highlightBlock(block)
+          }
+        } else {
+          console.warn('Raw response block not found')
+        }
+      })
     },
     clear() {
       this.headers.splice(0, this.headers.length)
@@ -134,6 +145,16 @@ export default {
         this.headers = response.headers
         this.responseBody = response.content
         this.prepareBodyForView()
+
+        if (this.useRawBody) {
+          this.$nextTick(() => {
+            const block = this.$el.querySelector('#highlighted-response')
+            if (block && window.hljs) {
+              block.textContent = this.content
+              window.hljs.highlightBlock(block)
+            }
+          })
+        }
       }, 500)
     },
     copyResponse() {

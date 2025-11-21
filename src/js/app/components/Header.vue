@@ -22,6 +22,14 @@
               <h4>❤️&nbsp;Support the project</h4>
             </a>
           </li>
+          <li>
+            <a href="#" @click.prevent="toggleTheme" class="theme-toggle" :title="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+              <h4>
+                <i v-if="isDarkMode" class="fa fa-moon-o"></i>
+                <i v-else class="fa fa-sun-o"></i>
+              </h4>
+            </a>
+          </li>
         </ul>
       </div>
     </div>
@@ -34,7 +42,18 @@ import ContextMenu from 'Components/ContextMenu.vue'
 export default {
   name: 'RHeader',
   data() {
-    return {}
+    return {
+      isDarkMode: false,
+    }
+  },
+  mounted() {
+    // Initialize theme state from body class
+    this.isDarkMode = document.body.classList.contains('dark-mode')
+    
+    // Listen for theme changes from other sources
+    bacheca.subscribe('themeChanged', (theme) => {
+      this.isDarkMode = theme === 'dark'
+    })
   },
   methods: {
     showDonateDialog() {
@@ -45,6 +64,14 @@ export default {
     },
     showAboutDialog() {
       bacheca.publish('showAboutDialog')
+    },
+    toggleTheme() {
+      const newTheme = this.isDarkMode ? 'light' : 'dark'
+      this.isDarkMode = !this.isDarkMode
+      bacheca.publish('setTheme', newTheme)
+    },
+    setTheme(theme) {
+      bacheca.publish('setTheme', theme)
     },
   },
   components: {
